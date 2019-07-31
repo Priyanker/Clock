@@ -54,10 +54,26 @@ function reset()
     minuteHand.style.transform = `rotate( ${minuteDeg}deg)`;
     secondHand.style.transform = `rotate( ${secondDeg}deg)`; 
 
-    setTimeout(reset, 1000);
+    timeOutId  = setTimeout(reset, 1000);
+    var dHour = document.getElementById('hour');
+    dHour.innerText = '00:';
+    dMinute = document.getElementById('minute');
+    dMinute.innerText = '00:';
+    dSecond = document.getElementById('second');
+    dSecond.innerText = '00';
     
 }
-function reset1()
+
+liveButton.addEventListener('click', initClock1);
+
+function initClock1()
 {
     
+    var x = 0;
+    if(x==0)
+    {
+        clearInterval(timeOutId);
+        x++;
+    }
+    setInterval(initClock, 1000);
 }
