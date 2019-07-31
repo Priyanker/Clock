@@ -2,7 +2,8 @@ var hourHand = document.getElementById('hourHand');
 var minuteHand = document.getElementById('minuteHand');
 var secondHand = document.getElementById('secondHand');
 
-var timeOutId = setInterval(initClock, 1000);
+var intervalId = setInterval(initClock, 1000);
+var liveTime = true;
 var liveClicked = false;
 function setDigitalTime(hour, minute, second) {
     var dHour = document.getElementById('hour');
@@ -18,6 +19,8 @@ function initClock() {
     var hour = date.getHours() % 12;
     var minute = date.getMinutes();
     var second = date.getSeconds();
+    console.log(second);
+    
 
     var hourDeg = (hour * 30) + (0.5 * minute);
     var minuteDeg = (minute * 6) + (0.1 * second);
@@ -34,32 +37,40 @@ function initClock() {
 var resetButton = document.getElementById('reset');
 var liveButton = document.getElementById('live');
 
-resetButton.addEventListener('click', reset);
 
-var hour = 0,
-minute = 0,
-second = 0; 
+var hour, minute, second; 
 var resetCounter = 0;
+resetButton.addEventListener('click', () => {
+    resetCounter++;
+    reset();
+});
 function reset()
 {
-    if(resetCounter==0 || liveClicked)
+    if(liveTime || liveClicked || resetCounter > 1)
     {
-        clearInterval(timeOutId);
-        resetCounter++;
+        console.log("hi");
+        clearInterval(intervalId);
         liveClicked = false;
+        liveTime = false;
+        hour = minute = second = 0;
     }
+    console.log("hrl");
     
     second++;
+    console.log(second);
+    
     var hourDeg = (hour * 30) + (0.5 * minute);
     var minuteDeg = (minute * 6) + (0.1 * second);
     var secondDeg = second * 6;
+    
 
     hourHand.style.transform = `rotate(${hourDeg}deg)`;
     minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
     secondHand.style.transform = `rotate(${secondDeg}deg)`; 
 
-    timeOutId  = setTimeout(reset, 1000);
+    console.log("hsssrl");
     setDigitalTime('00','00','00');
+    intervalId = setInterval(reset, 1000);
     
 }
 
@@ -71,8 +82,8 @@ function initClock1()
     liveClicked = true;
     if(liveCounter==0)
     {
-        clearInterval(timeOutId);
+        clearInterval(intervalId);
         liveCounter++;
     }
-    timeOutId = setInterval(initClock, 1000);
+    intervalId = setInterval(initClock, 1000);
 }
