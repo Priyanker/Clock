@@ -3,6 +3,15 @@ var minuteHand = document.getElementById('minuteHand');
 var secondHand = document.getElementById('secondHand');
 
 var timeOutId = setInterval(initClock, 1000);
+var liveClicked = false;
+function setDigitalTime(hour, minute, second) {
+    var dHour = document.getElementById('hour');
+    dHour.innerText = hour + ':';
+    dMinute = document.getElementById('minute');
+    dMinute.innerText = minute + ':';
+    dSecond = document.getElementById('second');
+    dSecond.innerText = second;
+}
 
 function initClock() {
     var date = new Date();
@@ -18,13 +27,7 @@ function initClock() {
     minuteHand.style.transform = `rotate( ${minuteDeg}deg)`;
     secondHand.style.transform = `rotate( ${secondDeg}deg)`;  
 
-    var dHour = document.getElementById('hour');
-    dHour.innerText = hour + ':';
-    dMinute = document.getElementById('minute');
-    dMinute.innerText = minute + ':';
-    dSecond = document.getElementById('second');
-    dSecond.innerText = second;
-
+    setDigitalTime(hour, minute, second);
 }
 
 
@@ -36,44 +39,40 @@ resetButton.addEventListener('click', reset);
 var hour = 0,
 minute = 0,
 second = 0; 
+var resetCounter = 0;
 function reset()
 {
-    var x = 0;
-    if(x==0)
+    if(resetCounter==0 || liveClicked)
     {
         clearInterval(timeOutId);
-        x++;
+        resetCounter++;
+        liveClicked = false;
     }
     
-
+    second++;
     var hourDeg = (hour * 30) + (0.5 * minute);
     var minuteDeg = (minute * 6) + (0.1 * second);
     var secondDeg = second * 6;
 
-    hourHand.style.transform = `rotate( ${hourDeg}deg)`;
-    minuteHand.style.transform = `rotate( ${minuteDeg}deg)`;
-    secondHand.style.transform = `rotate( ${secondDeg}deg)`; 
+    hourHand.style.transform = `rotate(${hourDeg}deg)`;
+    minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+    secondHand.style.transform = `rotate(${secondDeg}deg)`; 
 
     timeOutId  = setTimeout(reset, 1000);
-    var dHour = document.getElementById('hour');
-    dHour.innerText = '00:';
-    dMinute = document.getElementById('minute');
-    dMinute.innerText = '00:';
-    dSecond = document.getElementById('second');
-    dSecond.innerText = '00';
+    setDigitalTime('00','00','00');
     
 }
 
 liveButton.addEventListener('click', initClock1);
 
+var liveCounter = 0;
 function initClock1()
 {
-    
-    var x = 0;
-    if(x==0)
+    liveClicked = true;
+    if(liveCounter==0)
     {
         clearInterval(timeOutId);
-        x++;
+        liveCounter++;
     }
-    setInterval(initClock, 1000);
+    timeOutId = setInterval(initClock, 1000);
 }
