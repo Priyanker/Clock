@@ -54,7 +54,6 @@ function reset()
     if(liveState || (resetCounter > 1 && resetState === false))
     {
         clearInterval(intervalId);
-        console.log(intervalId);
         
         liveState = false;
         hour = minute = second = 0;
