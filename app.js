@@ -43,21 +43,20 @@ var resetButton = document.getElementById('reset');
 var liveButton = document.getElementById('live');
 
 
-var resetCounter = 0, resetState;
+var resetState;
 resetButton.addEventListener('click', () => {
-    resetCounter++;
     resetState = false;
     reset();
 });
 function reset()
 {
-    if(liveState || (resetCounter > 1 && resetState === false))
+    if(liveState || !resetState)
     {
         clearInterval(intervalId);
         
         liveState = false;
-        hour = minute = second = 0;
         resetState = true;
+        hour = minute = second = 0;
     }
     
     hourDeg = (hour * 30) + (0.5 * minute);
@@ -85,7 +84,6 @@ function reset()
 
 liveButton.addEventListener('click', () => {
     if(!liveState) {
-        resetCounter = 0;
         initClock1();
     }
 });
@@ -93,10 +91,7 @@ liveButton.addEventListener('click', () => {
 function initClock1()
 {
     liveState = true;
-    if(resetState)
-    {
         resetState = false;
         clearInterval(intervalId);
-    }
-    intervalId = setInterval(initClock, 1000);
+        intervalId = setInterval(initClock, 1000);
 }
