@@ -1,13 +1,20 @@
 var hourHand = document.getElementById('hourHand');
 var minuteHand = document.getElementById('minuteHand');
 var secondHand = document.getElementById('secondHand');
+var hour, minute, second,
+hourDeg, minuteDeg, secondDeg;
 
 var intervalId = setInterval(initClock, 1000);
-var liveTime = true;
-var liveClicked = false;
+var liveState = true;
 function setDigitalTime(hour, minute, second) {
-    var dHour = document.getElementById('hour');
-    dHour.innerText = hour + ':';
+    let dHour, dMinute, dSecond;
+    
+    dHour = document.getElementById('hour');
+    if(hour === 0 && liveState){
+        dHour.innerText = 12 + ':';
+    } else {
+        dHour.innerText = hour + ':';
+    }
     dMinute = document.getElementById('minute');
     dMinute.innerText = minute + ':';
     dSecond = document.getElementById('second');
@@ -15,16 +22,14 @@ function setDigitalTime(hour, minute, second) {
 }
 
 function initClock() {
-    var date = new Date();
-    var hour = date.getHours() % 12;
-    var minute = date.getMinutes();
-    var second = date.getSeconds();
-    console.log(second);
+    date = new Date();
+    hour = date.getHours() % 12;
+    minute = date.getMinutes();
+    second = date.getSeconds();
     
-
-    var hourDeg = (hour * 30) + (0.5 * minute);
-    var minuteDeg = (minute * 6) + (0.1 * second);
-    var secondDeg = second * 6;
+    hourDeg = (hour * 30) + (0.5 * minute);
+    minuteDeg = (minute * 6) + (0.1 * second);
+    secondDeg = second * 6;
 
     hourHand.style.transform = `rotate( ${hourDeg}deg)`;
     minuteHand.style.transform = `rotate( ${minuteDeg}deg)`;
@@ -38,52 +43,61 @@ var resetButton = document.getElementById('reset');
 var liveButton = document.getElementById('live');
 
 
-var hour, minute, second; 
-var resetCounter = 0;
+var resetCounter = 0, resetState;
 resetButton.addEventListener('click', () => {
     resetCounter++;
+    resetState = false;
     reset();
 });
 function reset()
 {
-    if(liveTime || liveClicked || resetCounter > 1)
+    if(liveState || (resetCounter > 1 && resetState === false))
     {
-        console.log("hi");
         clearInterval(intervalId);
-        liveClicked = false;
-        liveTime = false;
+        console.log(intervalId);
+        
+        liveState = false;
         hour = minute = second = 0;
+        resetState = true;
     }
-    console.log("hrl");
     
-    second++;
-    console.log(second);
-    
-    var hourDeg = (hour * 30) + (0.5 * minute);
-    var minuteDeg = (minute * 6) + (0.1 * second);
-    var secondDeg = second * 6;
-    
+    hourDeg = (hour * 30) + (0.5 * minute);
+    minuteDeg = (minute * 6) + (0.1 * second);
+    secondDeg = second * 6;
+    if(second === 60)
+    {
+        second = 0;
+        minute++;
+    }
+    if(minute === 60){
+        minute = 0;
+        hour++;
+    }
 
     hourHand.style.transform = `rotate(${hourDeg}deg)`;
     minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
     secondHand.style.transform = `rotate(${secondDeg}deg)`; 
 
-    console.log("hsssrl");
-    setDigitalTime('00','00','00');
-    intervalId = setInterval(reset, 1000);
+    setDigitalTime(hour, minute, second);
+    second++;
+    intervalId = setTimeout(reset, 1000);
     
 }
 
-liveButton.addEventListener('click', initClock1);
+liveButton.addEventListener('click', () => {
+    if(!liveState) {
+        resetCounter = 0;
+        initClock1();
+    }
+});
 
-var liveCounter = 0;
 function initClock1()
 {
-    liveClicked = true;
-    if(liveCounter==0)
+    liveState = true;
+    if(resetState)
     {
+        resetState = false;
         clearInterval(intervalId);
-        liveCounter++;
     }
     intervalId = setInterval(initClock, 1000);
 }
